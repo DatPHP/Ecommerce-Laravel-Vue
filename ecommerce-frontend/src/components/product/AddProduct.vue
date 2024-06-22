@@ -42,6 +42,9 @@
   <script>
   // Importing the axios instance
   import axios from '@/axios';
+  import Swal from 'sweetalert2/dist/sweetalert2';
+  import 'sweetalert2/dist/sweetalert2.min.css';
+
   
   export default {
     // Component data
@@ -93,14 +96,23 @@
           formData.append('image', this.image)
           formData.append('price',this.price)
          
-        
-         
-          await axios.post('/products', formData);
-         
-          // If the request is successful, redirect to the product list
-          this.$router.push('/');
+         // await axios.post('/products', formData);
+          await axios.post(`/products`, formData).then(({ data }) => {
+            Swal.fire({
+              icon: "success",
+              text: data.message
+            })
+            // If the request is successful, redirect to the product list
+            this.$router.push('/');
+          //navigate("/product")
+        }).catch(({ response }) => {
+          Swal.fire({
+              text: response.data.message,
+              icon: "error"
+            })
+        })  
 
-           
+
         } catch (error) {
           // If an error occurs, log it to the console
           console.error("An error occurred while adding the product:", error);
