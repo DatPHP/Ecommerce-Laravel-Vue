@@ -1,9 +1,9 @@
 import { createRouter, createWebHistory } from 'vue-router';
 
-import ProductList from './components/ProductList.vue';
-import ProductDetails from './components/ProductDetails.vue';
-import AddProduct from './components/AddProduct.vue';
-import EditProduct from './components/EditProduct.vue';
+import ProductList from './components/product/ProductList.vue';
+import ProductDetails from './components/product/ProductDetails.vue';
+import AddProduct from './components/product/AddProduct.vue';
+import EditProduct from './components/product/EditProduct.vue';
 import Login from './components/Login.vue'; // Import the Login component
 import Register from './components/Register.vue'; // Import the Register component
 

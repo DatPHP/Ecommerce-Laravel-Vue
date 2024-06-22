@@ -4,6 +4,8 @@ import App from './App.vue';
 import store from './store'; // Vuex store
 import router from './router.js'; // Vue router
 
+import './index.css'
+import '../node_modules/flowbite-vue/dist/index.css'
 // Creating a Vue application instance
 const app = createApp(App)
 

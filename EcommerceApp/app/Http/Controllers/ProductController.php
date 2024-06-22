@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 // Begin the declaration of the ProductController class, which extends the base Controller class.
 class ProductController extends Controller
@@ -39,10 +40,28 @@ class ProductController extends Controller
             'name' => 'required|max:255',
             'description' => 'required',
             'price' => 'required|numeric',
+            
         ]);
     
+        $inputData = $request->all();
+
+        if ($image = $request->file('image')) {
+            /*
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            $inputData['image'] = "$profileImage";
+            */
+
+            $imageName = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('product/image', $image,$imageName);
+
+            $inputData['image'] = "$imageName";
+
+        }
+
         // Create a new 'Product' record in the database with the validated data.
-        $product = Product::create($validatedData);
+        $product = Product::create($inputData);
     
         // Return the created 'Product' as a JSON response.
         // The second parameter, 201, is the HTTP status code for Created.
@@ -79,10 +98,29 @@ class ProductController extends Controller
             // 'price' => 'required|numeric',
         ]);
 
+
+        $inputData = $request->all();
+    
+        if ($image = $request->file('image')) {
+            /*
+            $destinationPath = 'images/';
+            $profileImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            $image->move($destinationPath, $profileImage);
+            */
+
+            $imageName = date('YmdHis') . "." . $image->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('product/image', $image,$imageName);
+
+            $inputData['image'] = "$imageName";
+        }else{
+            unset($inputData['image']);
+        }
+
+
         // Check if the product was found
         if ($product) {
             // Update the product with the validated data
-            $product->update($validatedData);
+            $product->update($inputData);
         
             // Return the updated product as a JSON response with a 200 HTTP status code
             return response()->json($product, 200);

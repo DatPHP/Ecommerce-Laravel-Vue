@@ -22,6 +22,17 @@
       <!-- Error message for the product price -->
       <!-- Displayed if 'errors.price' is truthy -->
       <p v-if="errors.price" class="error">{{ errors.price }}</p>
+
+      
+     
+          <input accept="image/*" type="file" @change="previewFiles($event)" />
+          <img
+            alt=""
+            :src="newImage || 'https://www.namepros.com/attachments/empty-png.89209/'"
+          />
+     
+     
+
   
       <!-- Button for submitting the form -->
       <button type="submit" class="submit-button">Add Product</button>
@@ -40,6 +51,10 @@
         name: '',
         description: '',
         price: '',
+        imageUpload:'',
+        imageUrl:'',
+        image: "",
+        newImage: "",
         // Validation errors
         errors: {}
       };
@@ -69,19 +84,49 @@
         }
         
         try {
-          // Send a POST request to the API to add the product
-          await axios.post('/products', { // Hey, this next part might take a while, so let's wait for it to finish before moving on."
-            name: this.name,
-            description: this.description,
-            price: this.price
-          });
+          // Send a POST request to the API to add the 
+          //console.log(this.image);
+
+          const formData = new FormData()
+          formData.append('name', this.name)
+          formData.append('description', this.description)
+          formData.append('image', this.image)
+          formData.append('price',this.price)
+         
+        
+         
+          await axios.post('/products', formData);
+         
           // If the request is successful, redirect to the product list
           this.$router.push('/');
+
+           
         } catch (error) {
           // If an error occurs, log it to the console
           console.error("An error occurred while adding the product:", error);
         }
-      }
+         
+
+      },
+      onChangeImage(e) {
+        const file = e.target.files[0];
+        console.log(file);
+        this.data.image = file;
+        
+        this.imageUrl = URL.createObjectURL(file); //url image 
+      },
+
+      previewFiles(event) {
+      const file = event.target.files[0];
+      this.image = file;
+     
+      const theReader = new FileReader();
+      theReader.onloadend = async () => {
+        this.newImage = await theReader.result;
+      };
+      theReader.readAsDataURL(file);
+    }
+
     }
   };
   </script>
